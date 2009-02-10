@@ -1,3 +1,7 @@
+%lambda1 is a tweak parameter in 0.002-0.5
+%lambda2 is a tweak parameter in 10-25
+%gamma is the convergence factor
+
 function [ L ] = deconvolve( image, psf, lambda1, lambda2, gamma )
 
 %Construct constant map
@@ -31,8 +35,10 @@ while true
         break;
     end
         
-    %Scale gamma
+    %Scale tweak variables
     gamma = 2.0 * gamma;
+    lambda1 = lambda1 / 1.1;
+    lambda2 = lambda2 / 1.5;
 end
 
 end
