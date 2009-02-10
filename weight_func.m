@@ -1,6 +1,6 @@
+%Weight function (taken from paper)
 function [ res ] = weight_func( dx, dy )
 
-res = 0;
-
+res = 50.0 / 2.0^(dx+dy);
 
 end
