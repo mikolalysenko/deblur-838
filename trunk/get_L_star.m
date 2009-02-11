@@ -8,8 +8,9 @@ pys = fft2(psi(:,2));
 
 %Point spread function for that weird operator
 f_phase = zeros(w, h);
-for dx=0:2
-for dy=0:2
+for d=0:2
+for dx=0:d
+for dy=0:(d-dx)
     fd = deriv_psf(w, h, dx, dy);
     f_phase = f_phase + weight_func(dx, dy) * conj(fd) * fd;
 end
