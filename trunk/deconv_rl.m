@@ -33,25 +33,14 @@ for it=1:niters-1
     deblurredImgs{it+1} = deblurredImgs{it} .* mult;
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 return;
 
 
 
+%{
+
+% The following is a lame (and highly inefficient) attempt at a direct
+% implementation of Richardson's paper.
 
 [I,J,nbands] = size(H);
 [K,L] = size(S);
@@ -112,7 +101,7 @@ for it=1:niters
     
     fprintf('done\n');
 end
-
+%}
 
 
 
