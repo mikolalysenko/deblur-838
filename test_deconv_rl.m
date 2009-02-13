@@ -2,7 +2,7 @@
 close all;
 
 gndTruthImg = imread('lichtenstein.png');
-gndTruthImg = im2double(gndTruthImg(50:149, 50:149, :));
+gndTruthImg = im2double(gndTruthImg);
 
 % the blur kernel
 kernel = fspecial('gaussian', 7,7);
@@ -16,11 +16,11 @@ title('Ground Truth Image');
 figure, imshow(blurredImg);
 title('Blurred Image');
 
-niters = 50;
+niters = 100;
 [ W ] = deconv_rl( blurredImg, kernel, niters );
 
 
-for it=1:5:length(W)
+for it=1:10:length(W)
     img = W{it};
     
     figure, imshow(img);
