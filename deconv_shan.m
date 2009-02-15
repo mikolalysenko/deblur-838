@@ -4,47 +4,37 @@
 
 function [ L ] = deconv_shan( image, psf, lambda1, lambda2, gamma )
 
+%Dimensions
 w = size(image,1);
 h = size(image,2);
 
+%Grayscale image
+g_image = rgb2gray(image);
+
 %Construct constant map
-M = zeros(w, h, 3);
-for d=1:3
-    M(:,:,d) = constant_map(image(:,:,d), 10, 10, 0.005);
-end
+M = constant_map(g_image, 10, 10, 0.0025);
 
 %Initialize local vars
 L = image;
 
 while true    
-    n_good = 0;
+    
+    %Estimate psi
+    psi = estimate_psi(g_image, rgb2gray(L), M, lambda1, lambda2, gamma);
+    
+    %Per component solve for L_star
     for d=1:3
-        %Estimate psi
-        psi = estimate_psi(image(:,:,d), L(:,:,d), M(:,:,d), lambda1, lambda2, gamma);
-
-        %Estimate L
         L(:,:,d) = get_L_star( psf, image(:,:,d), psi, gamma);
-
-        %Check convergence
-        if( phase_mag(L(:,:,d)) <= 1e-5 && ...
-            phase_mag(psi(:,:,1)) <= 1e-5 && ...
-            phase_mag(psi(:,:,2)) <= 1e-5 )
-        
-            n_good = n_good + 1;
-        end
     end
     
-    figure, imshow(psi(:,:,1))
-    title('Psi-x');
-
-    figure, imshow(psi(:,:,2))
-    title('Psi-y');
-    
+    %Display L
     figure, imshow(L)
     title('L');
     
-    %If all channels converged, then done
-    if(n_good == 3)
+    %If converged, then done
+    if( phase_mag(rgb2gray(L)) <= 1e-5 && ...
+        phase_mag(psi(:,:,1)) <= 1e-5 && ...
+        phase_mag(psi(:,:,2)) <= 1e-5 )
         break;
     end
         
