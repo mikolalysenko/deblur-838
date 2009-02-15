@@ -16,4 +16,8 @@ for j=1:size(image,2)
 end
 end
 
+
+figure, imshow(M)
+title('Constant Map');
+
 end

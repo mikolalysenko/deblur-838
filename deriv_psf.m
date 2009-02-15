@@ -4,10 +4,10 @@ function [res] = deriv_psf( w, h, dx, dy )
 %Construct derivative maps incrementally
 arr = [1];
 for i=1:dx
-    arr = conv2(arr, [1,-1]);
+    arr = conv2(arr, [0.5,-0.5]);
 end
 for j=1:dy
-    arr = conv2(arr, [1;-1]);
+    arr = conv2(arr, [0.5;-0.5]);
 end
 
 %Done
