@@ -2,11 +2,15 @@
 %lambda2 is a tweak parameter in 10-25
 %gamma is the convergence factor
 
-function [ L ] = deconvolve( image, psf, lambda1, lambda2, gamma )
+function [ L ] = deconv_shan( image, psf, lambda1, lambda2, gamma )
+
+w = size(image,1);
+h = size(image,2);
 
 %Construct constant map
+M = zeros(w, h, 3);
 for d=1:3
-    M = constant_map(image(:,:,d), 10, 10, 20);
+    M(:,:,d) = constant_map(image(:,:,d), 10, 10, 0.005);
 end
 
 %Initialize local vars
@@ -29,6 +33,15 @@ while true
             n_good = n_good + 1;
         end
     end
+    
+    figure, imshow(psi(:,:,1))
+    title('Psi-x');
+
+    figure, imshow(psi(:,:,2))
+    title('Psi-y');
+    
+    figure, imshow(L)
+    title('L');
     
     %If all channels converged, then done
     if(n_good == 3)
