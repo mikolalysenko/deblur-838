@@ -6,7 +6,7 @@ function [ res ] = phase_mag( image )
 w = size(image,1);
 h = size(image,2);
 
-%Compute f_phase (the triangle operator)
+%Point spread function for that weird operator
 f_phase = zeros(w, h);
 for d=0:2
 for dx=0:d
@@ -17,8 +17,8 @@ end
 end
 
 %Compute rescaled magnitude
-tmp = conj(fft2(image)) .* f_phase ./ (w * h);
-res = sum(sum(conj(tmp) .* tmp))
+tmp = nfft2(image) .* f_phase;
+res = sqrt(sum(sum(conj(tmp) .* tmp)))
 
 
 end

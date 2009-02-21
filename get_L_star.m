@@ -5,10 +5,10 @@ h = size(image, 2);
 s = sqrt(w * h);
 
 %FFT input signals
-ks = psf2otf(kernel(:,:,1), [w,h]) / s;
-is = fft2(image) / s;
-pxs = fft2(psi(:,:,1)) / s;
-pys = fft2(psi(:,:,2)) / s;
+ks = psf2otf(kernel(:,:,1), [w,h]) ./ s;
+is = nfft2(image);
+pxs = nfft2(psi(:,:,1));
+pys = nfft2(psi(:,:,2));
 
 %Point spread function for that weird operator
 f_phase = zeros(w, h);
@@ -20,16 +20,14 @@ for dx=0:d
 end
 end
 
-f_phase = f_phase / s;
-
 %Point spread functions for gradient
-f_dx = deriv_psf(w, h, 1, 0) / s;
-f_dy = deriv_psf(w, h, 0, 1) / s;
+f_dx = deriv_psf(w, h, 1, 0);
+f_dy = deriv_psf(w, h, 0, 1);
 
 %Taken from Eq. 10
 numer = conj(ks) .* is .* f_phase + gamma .* (conj(f_dx) .*  pxs + conj(f_dy) .*  pys);
 denom = conj(ks) .* ks .* f_phase + gamma .* (conj(f_dx) .* f_dx + conj(f_dy) .* f_dy); 
 
-l_star = ifft2( s .* (numer ./ denom) );
+l_star = nifft2( numer ./ denom );
 
 end

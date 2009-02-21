@@ -8,36 +8,39 @@ function [ L ] = deconv_shan( image, psf, lambda1, lambda2, gamma )
 w = size(image,1);
 h = size(image,2);
 
-%Grayscale image
-g_image = rgb2gray(image);
 
 %Construct constant map
-M = constant_map(g_image, 10, 10, 0.0025);
+M = zeros(w, h, 3);
+for i=1:3
+    M(:,:,i) = constant_map(image(:,:,i), psf, 5.0 / 255.0);
+end
 
 %Initialize local vars
 L = image;
 
 while true    
     
-    %Estimate psi
-    psi = estimate_psi(g_image, rgb2gray(L), M, lambda1, lambda2, gamma);
+    ngood = 0;
     
     %Per component solve for L_star
     for d=1:3
+        psi = estimate_psi(image(:,:,d), L(:,:,d), M(:,:,d), lambda1, lambda2, gamma);
         L(:,:,d) = get_L_star( psf, image(:,:,d), psi, gamma);
+
+        %If converged, then done
+        if( phase_mag(rgb2gray(L)) <= 255e-5 && ...
+            phase_mag(psi(:,:,1)) <= 255e-5 && ...
+            phase_mag(psi(:,:,2)) <= 255e-5 )
+            ngood = ngood + 1;
+        end
+
     end
     
-    %Display L
-    figure, imshow(L)
-    title('L');
     
-    %If converged, then done
-    if( phase_mag(rgb2gray(L)) <= 1e-5 && ...
-        phase_mag(psi(:,:,1)) <= 1e-5 && ...
-        phase_mag(psi(:,:,2)) <= 1e-5 )
+    if(ngood == 3)
         break;
     end
-        
+       
     %Scale tweak variables
     gamma = 2.0 * gamma;
     lambda1 = lambda1 / 1.1;
