@@ -11,7 +11,7 @@ title('Blurred Image');
 figure, imshow(kernel);
 title('Kernel');
 
-img = deconv_shan( blurredImg, kernel, 0.00002, 20, 2.0 );
+img = deconv_shan( blurredImg, kernel, 0.0016, 140, 2.0 );
 
 figure, imshow(img);
 title('Deblurred Result');

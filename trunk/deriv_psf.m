@@ -11,6 +11,6 @@ for j=1:dy
 end
 
 %Done
-res = psf2otf(arr, [w,h]);
+res = psf2otf(arr, [w,h]) ./ sqrt(w * h);
 
 end

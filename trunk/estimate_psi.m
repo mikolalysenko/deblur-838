@@ -15,24 +15,20 @@ s = sqrt(w * h);
 psi = zeros(w, h, 2);
 
 %Construct gradient kernel
-dX = deriv_psf(w, h, 1, 0) ./ s;
-dY = deriv_psf(w, h, 0, 1) ./ s;
-
+dX = deriv_psf(w, h, 1, 0);
+dY = deriv_psf(w, h, 0, 1);
 
 %Compute image gradient
-ftI = fft2(image) ./ s;
+ftI = nfft2(image);
 dI = zeros(w, h, 2);
-dI(:,:,1) = ifft2(s .* conj(dX) .* ftI);
-dI(:,:,2) = ifft2(s .* conj(dY) .* ftI);
-dI = dI * 256;
+dI(:,:,1) = nifft2(dX .* ftI);
+dI(:,:,2) = nifft2(dY .* ftI);
 
 %Compute L gradient
-ftL = fft2(L) ./ s;
+ftL = nfft2(L);
 dL = zeros(w, h, 2);
-dL(:,:,1) = ifft2(s .* conj(dX) .* ftL);
-dL(:,:,2) = ifft2(s .* conj(dY) .* ftL);
-dL = dL * 256;
-
+dL(:,:,1) = nifft2(dX .* ftL);
+dL(:,:,2) = nifft2(dY .* ftL);
 
 %Solve for gradients
 for i=1:size(psi,1)
@@ -47,29 +43,15 @@ for d=1:2
     best_v = 1.0e32;
     best_x = 0;
     
-    for x=-256:256
-        
-        v = lambda2 * M(i,j) * (x - dI(i,j,d))^2 + ...
-            gamma * (x - dL(i,j,d))^2;
-        
-        if abs(x) <= lt
-            v = v + lambda1 * K * abs(x);
-        else
-            v = v + lambda1 * (a * x^2 + b);
-        end
-        
-        if(v < best_v)
-            best_v = v;
-            best_x = x;
-        end
-    end
+    cI = lambda2 * M(i,j);
+    cL = gamma;
+    
+    best_x = (cI * dI(i,j,d) + cL * dL(i,j,d)) / (cI + cL);
     
     psi(i,j,d) = best_x;
 end
 end
 end
 
-%Rescale
-psi = psi ./ 512.0;
 
 end
