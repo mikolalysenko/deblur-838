@@ -3,8 +3,8 @@ function [ psi ] = estimate_psi( image, L, M, lambda1, lambda2, gamma )
 %Constants for edge distribution stats
 global K a b lt vI vL cI cL best_x best_c;
 
-K = lambda1 * 2.7 * 255.0;
-a = lambda1 * 6.1e-4 * (255.0^2);
+K = lambda1 * 2.7 / 255.0;
+a = lambda1 * 6.1e-4 / (255.0^2);
 b = lambda1 * 5.0;
 lt = (K - sqrt(K^2 - 4.0 * a * b)) / (2.0 * a);
 
@@ -22,16 +22,16 @@ dX = deriv_psf(w, h, 1, 0);
 dY = deriv_psf(w, h, 0, 1);
 
 %Compute image gradient
-ftI = nfft2(image);
+ftI = fft2(image);
 dI = zeros(w, h, 2);
-dI(:,:,1) = nifft2(dX .* ftI);
-dI(:,:,2) = nifft2(dY .* ftI);
+dI(:,:,1) = ifft2(dX .* ftI);
+dI(:,:,2) = ifft2(dY .* ftI);
 
 %Compute L gradient
-ftL = nfft2(L);
+ftL = fft2(L);
 dL = zeros(w, h, 2);
-dL(:,:,1) = nifft2(dX .* ftL);
-dL(:,:,2) = nifft2(dY .* ftL);
+dL(:,:,1) = ifft2(dX .* ftL);
+dL(:,:,2) = ifft2(dY .* ftL);
 
 %Solve for gradients
 for i=1:size(psi,1)
@@ -45,7 +45,7 @@ for d=1:2
 
     vI = dI(i,j,d);
     vL = dL(i,j,d);
-    cI = lambda2 * M(i,j);
+    cI = lambda2 * M(i,j) / (255.0^2);
     cL = gamma;
 
     best_x = 0;
@@ -54,9 +54,9 @@ for d=1:2
     eval_x(0);
     eval_x(lt);
     eval_x(-lt);
-    eval_x( (vI + vL) / (cI + cL + a) );
-    eval_x( (vI + vL + K/2) / (cI + cL) );
-    eval_x( (vI + vL - K/2) / (cI + cL) );    
+    eval_x( (cI * vI + cL * vL) / (cI + cL + a) );
+    eval_x( (cI * vI + cL * vL + K/2) / (cI + cL) );
+    eval_x( (cI * vI + cL * vL - K/2) / (cI + cL) );    
     
     psi(i,j,d) = best_x;
 end
