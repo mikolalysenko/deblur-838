@@ -17,11 +17,10 @@ for j=1:size(psf,2)
 end
 end
 
-lo_x = 2* (lo_x - floor(size(psf,1)/2));
-hi_x = 2 * (hi_x - floor(size(psf,1)/2));
-lo_y = 2* (lo_y - floor(size(psf,2)/2));
-hi_y = 2 * (hi_y - floor(size(psf,2)/2));
-
+lo_x = (lo_x - floor(size(psf,1)/2));
+hi_x = (hi_x - floor(size(psf,1)/2));
+lo_y = (lo_y - floor(size(psf,2)/2));
+hi_y = (hi_y - floor(size(psf,2)/2));
 
 M = zeros(size(image,1), size(image,2));
 
