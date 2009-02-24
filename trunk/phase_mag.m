@@ -8,7 +8,7 @@ h = size(image,2);
 
 %Point spread function for that weird operator
 f_phase = zeros(w, h);
-for d=0:2
+for d=1:2
 for dx=0:d
     dy = d-dx;
     fd = deriv_psf(w, h, dx, dy);
