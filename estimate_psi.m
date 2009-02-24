@@ -1,10 +1,13 @@
 function [ psi ] = estimate_psi( image, L, M, lambda1, lambda2, gamma )
 
 %Constants for edge distribution stats
-K = 2.7;
-a = 6.1e-4;
-b = 5.0;
-lt = 2.5;        %This may not be the right number...
+global K a b lt vI vL cI cL best_x best_c;
+
+K = lambda1 * 2.7 * 255.0;
+a = lambda1 * 6.1e-4 * (255.0^2);
+b = lambda1 * 5.0;
+lt = (K - sqrt(K^2 - 4.0 * a * b)) / (2.0 * a);
+
 
 %Dimensions
 w = size(image, 1);
@@ -40,18 +43,44 @@ for d=1:2
     %For now, do this by brute force search (can actually be done in
     % constant time by taking derivatives)
 
-    best_v = 1.0e32;
-    best_x = 0;
-    
+    vI = dI(i,j,d);
+    vL = dL(i,j,d);
     cI = lambda2 * M(i,j);
     cL = gamma;
+
+    best_x = 0;
+    best_c = 1e32;
     
-    best_x = (cI * dI(i,j,d) + cL * dL(i,j,d)) / (cI + cL);
+    eval_x(0);
+    eval_x(lt);
+    eval_x(-lt);
+    eval_x( (vI + vL) / (cI + cL + a) );
+    eval_x( (vI + vL + K/2) / (cI + cL) );
+    eval_x( (vI + vL - K/2) / (cI + cL) );    
     
     psi(i,j,d) = best_x;
 end
 end
 end
 
+clear global K a b lt vI vL cI cL best_x best_c;
 
+end
+
+function [cost] = eval_x(x)
+
+    global K a b lt vI vL cI cL best_x best_c;
+
+    cost = cI * (x - vI)^2 + cL * (x - vL)^2;
+
+    if(abs(x) < lt)
+        cost = cost + abs(x) * K;
+    else
+        cost = cost + (a * x^2 + b);
+    end
+
+    if(cost < best_c)
+        best_c = cost;
+        best_x = x;
+    end
 end

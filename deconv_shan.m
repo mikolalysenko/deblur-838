@@ -28,14 +28,17 @@ while true
         L(:,:,d) = get_L_star( psf, image(:,:,d), psi, gamma);
 
         %If converged, then done
-        if( phase_mag(rgb2gray(L)) <= 255e-5 && ...
-            phase_mag(psi(:,:,1)) <= 255e-5 && ...
-            phase_mag(psi(:,:,2)) <= 255e-5 )
+        if( phase_mag(L(:,:,d)) <= 1e-5 && ...
+            phase_mag(psi(:,:,1)) <= 1e-5 && ...
+            phase_mag(psi(:,:,2)) <= 1e-5 )
             ngood = ngood + 1;
         end
 
     end
     
+    
+    figure,imshow(L);
+    title('L');
     
     if(ngood == 3)
         break;
@@ -43,8 +46,8 @@ while true
        
     %Scale tweak variables
     gamma = 2.0 * gamma;
-    lambda1 = lambda1 / 1.1;
-    lambda2 = lambda2 / 1.5;
+    lambda1 = lambda1 * 1.1;
+    lambda2 = lambda2 * 1.4;
 end
 
 end
