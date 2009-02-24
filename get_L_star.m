@@ -36,6 +36,6 @@ denom = conj(ks) .* ks .* f_phase ./ s + gamma .* (conj(f_dx) .* f_dx + conj(f_d
 
 % WHY IS THAT ./ s IN THERE?  AND WHY DOES IT WORK?
 
-l_star = ifft2( s .* numer ./ denom );
+l_star = ifft2( numer ./ denom );
 
 end
