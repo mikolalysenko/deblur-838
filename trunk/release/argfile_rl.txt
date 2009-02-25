@@ -1,0 +1,7 @@
+-method RL
+-kernelFile kernel.txt
+-inputFile input_blurry.ppm
+-outputFile output.ppm
+-numIters 50
+
+

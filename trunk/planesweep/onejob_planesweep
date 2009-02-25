@@ -1,0 +1,9 @@
+#!/bin/csh
+# this script is a companion script for submitmjobs for MATLAB apps
+# IMPORTANT: DONOT indent any of the below statements
+matlab -nosplash << MATLAB_ENV
+addpath('~/MATLAB');
+run_planesweep($1);
+exit                     % don't forget to exit
+MATLAB_ENV
+
