@@ -1,0 +1,31 @@
+#!/bin/csh
+#
+
+@ numprocs = $1
+@ start = $2
+@ end = $3
+
+@ myi = $start
+
+#@ procs = 0
+
+while ( $myi <= $end )
+
+  	@ myj = 0
+  	while ($myj < $numprocs)
+    		@ arg1 = $myi + $myj
+
+    		if ($arg1 > $end)  then
+			break
+		endif
+
+    		csh onejob_planesweep $arg1 &
+
+    		@ myj++
+  	end
+	wait
+	
+
+	@ myi = $myi + $numprocs
+end
+
