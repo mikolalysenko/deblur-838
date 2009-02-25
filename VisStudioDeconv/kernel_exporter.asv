@@ -1,0 +1,24 @@
+function [ output ] = kernel_exporter( kernel )
+%KERNEL_EXPORTER Save a kernel image as a textfile in the following format:
+% 
+% height
+% width
+% (y1, x1) value
+% (y2, x1) value
+% (y3, x1) value
+% ...
+% (yh, x1) value
+% (y1, x2) value
+% ...
+% (yh, xw) value
+
+[height, width, nbands] = size(kernel);
+
+output = zeros(height*width+2, 1);
+
+output(1) = height;
+output(2) = width;
+
+for x=1:width
+    
+
