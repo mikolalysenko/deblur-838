@@ -1,7 +1,0 @@
--method RL
--kernelFile kernel13x13.txt
--inputFile blurred-face-in-library.ppm
--outputFile output.ppm
--numIters 50
-
-
