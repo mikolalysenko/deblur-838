@@ -1,9 +1,0 @@
--method BRL
--kernelFile kernel.txt
--inputFile input_blurry.ppm
--outputFile output.ppm
--numIters 50
--regFactor 0.15
-
-
-
