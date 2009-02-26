@@ -32,10 +32,10 @@ f_dy = deriv_psf(w, h, 0, 1);
 
 %Taken from Eq. 10
 numer = conj(ks) .* is .* f_phase + gamma .* (conj(f_dx) .*  pxs + conj(f_dy) .*  pys);
-denom = conj(ks) .* ks .* f_phase ./ s + gamma .* (conj(f_dx) .* f_dx + conj(f_dy) .* f_dy); 
+denom = conj(ks) .* ks .* f_phase + gamma .* (conj(f_dx) .* f_dx + conj(f_dy) .* f_dy); 
 
 % WHY IS THAT ./ s IN THERE?  AND WHY DOES IT WORK?
 
-l_star = ifft2( numer ./ denom );
+l_star = ifft2( s .* numer ./ denom );
 
 end
