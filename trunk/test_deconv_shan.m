@@ -2,8 +2,8 @@
 close all;
 
 %Read image / kernel pair
-blurredImg = im2double(imread('test4.bmp'));
-kernel = im2double(imread('kernel4.bmp'));
+blurredImg = im2double(imread('test7.bmp'));
+kernel = im2double(imread('kernel7.bmp'));
 
 figure, imshow(blurredImg);
 title('Blurred Image');
