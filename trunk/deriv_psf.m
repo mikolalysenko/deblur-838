@@ -1,16 +1,17 @@
 %This function constructs the kernel for the derivative wrt x,y
 function [res] = deriv_psf( w, h, dx, dy )
 
+s = sqrt(w*h);
+
 %Construct derivative maps incrementally
-arr = [1];
+res = psf2otf([1], [w,h]);
 for i=1:dy
-    arr = conv2(arr, [1,-1]);
+    res = res .* psf2otf([1,-1], [w,h]);
 end
 for j=1:dx
-    arr = conv2(arr, [1;-1]);
+    res = res .* psf2otf([1;-1], [w,h]);
 end
 
-%Done
-res = psf2otf(arr, [w,h]);
+res = res .* (w*h / sqrt(sum(sum(res .* conj(res)))));
 
 end
